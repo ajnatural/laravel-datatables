@@ -213,7 +213,7 @@ class QueryBuilderEngine extends BaseEngine implements DataTableEngine
                     $parameters = $this->columnDef['filter'][$column]['parameters'];
                     $this->compileColumnQuery($this->getQueryBuilder(), $method, $parameters, $column, $keyword);
                 } else {
-                    $column = $this->castColumn($column);
+                    $column = $this->castColumn($this->prefixColumn($column));
                     if ($this->isCaseInsensitive()) {
                         if ($this->request->isRegex($i)) {
                             $this->query->whereRaw('LOWER(' . $column . ') REGEXP ?', [Str::lower($keyword)]);
