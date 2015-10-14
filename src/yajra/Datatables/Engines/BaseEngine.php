@@ -251,10 +251,10 @@ abstract class BaseEngine implements DataTableEngine
      */
     public function extractColumnName($str)
     {
-        preg_match('#^(\S*?)\s+as\s+(\S*?)$#si', $str, $matches);
+        $matches = preg_split('/ as /i', $str);
 
         if ( ! empty($matches)) {
-            return $matches[2];
+            return last($matches);
         } elseif (strpos($str, '.')) {
             $array = explode('.', $str);
 
@@ -297,11 +297,22 @@ abstract class BaseEngine implements DataTableEngine
         $names[]        = $query->from;
         $joins          = $query->joins ?: [];
         $databasePrefix = $this->prefix;
+
         foreach ($joins as $join) {
-            $table   = preg_split('/ as /i', $join->table);
-            $names[] = $table[0];
-            if (isset($table[1]) && ! empty($databasePrefix) && strpos($table[1], $databasePrefix) == 0) {
-                $names[] = preg_replace('/^' . $databasePrefix . '/', '', $table[1]);
+            $names[] = is_string($join->table) ? $join->table : $join->table->getValue();
+        }
+
+        foreach ($names as &$name) {
+            $matches = preg_split('/ as /i', $name);
+
+            $table = last($matches);
+
+            if (count($matches) > 1) {
+                $name = $table;
+            }
+
+            if ($databasePrefix && strpos($table, $databasePrefix) === 0) {
+                $name = preg_replace('/^' . $databasePrefix . '/', '', $name);
             }
         }
 
