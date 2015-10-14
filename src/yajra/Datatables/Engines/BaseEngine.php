@@ -253,8 +253,8 @@ abstract class BaseEngine implements DataTableEngine
     {
         $matches = preg_split('/ as /i', $str);
 
-        if ( ! empty($matches)) {
-            return last($matches);
+        if ($matches) {
+            return $matches[0];
         } elseif (strpos($str, '.')) {
             $array = explode('.', $str);
 
