@@ -216,16 +216,16 @@ class QueryBuilderEngine extends BaseEngine implements DataTableEngine
                     $column = $this->castColumn($this->prefixColumn($column));
                     if ($this->isCaseInsensitive()) {
                         if ($this->request->isRegex($i)) {
-                            $this->query->whereRaw('LOWER(' . $column . ') REGEXP ?', [Str::lower($keyword)]);
+                            $this->query->havingRaw('LOWER(' . $column . ') REGEXP ?', [Str::lower($keyword)]);
                         } else {
-                            $this->query->whereRaw('LOWER(' . $column . ') LIKE ?', [Str::lower($keyword)]);
+                            $this->query->havingRaw('LOWER(' . $column . ') LIKE ?', [Str::lower($keyword)]);
                         }
                     } else {
                         $col = strstr($column, '(') ? $this->connection->raw($column) : $column;
                         if ($this->request->isRegex($i)) {
-                            $this->query->whereRaw($col . ' REGEXP ?', [$keyword]);
+                            $this->query->havingRaw($col . ' REGEXP ?', [$keyword]);
                         } else {
-                            $this->query->whereRaw($col . ' LIKE ?', [$keyword]);
+                            $this->query->havingRaw($col . ' LIKE ?', [$keyword]);
                         }
                     }
                 }
